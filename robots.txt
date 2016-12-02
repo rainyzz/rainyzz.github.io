@@ -1,0 +1,8 @@
+User-agent: *
+
+Disallow: /tags/
+Disallow: /page/
+Disallow: /archives/
+
+Sitemap: http://rainyzz.com/sitemap.xml
+Sitemap: http://rainyzz.com/baidusitemap.xml
