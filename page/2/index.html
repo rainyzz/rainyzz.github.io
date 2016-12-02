@@ -236,7 +236,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://rainyzz.com/2015/02/09/backtracking/">
+  <link itemprop="mainEntityOfPage" href="http://rainyzz.com/2015/02/09/backtracking.html">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="rainyzz">
@@ -261,7 +261,7 @@
             
               
                 
-                <a class="post-title-link" href="/2015/02/09/backtracking/" itemprop="url">
+                <a class="post-title-link" href="/2015/02/09/backtracking.html" itemprop="url">
                   回溯法
                 </a>
               
@@ -317,7 +317,7 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</div><div class="line">    <span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; subsets(<span class="keyword">int</span>[] S) &#123;</div><div class="line">        List&lt;List&lt;Integer&gt;&gt; result = <span class="keyword">new</span> ArrayList&lt;List&lt;Integer&gt;&gt;();</div><div class="line">        <span class="keyword">if</span>(S == <span class="keyword">null</span> || S.length == <span class="number">0</span>) <span class="keyword">return</span> result;</div><div class="line">        List&lt;Integer&gt; list = <span class="keyword">new</span> ArrayList&lt;Integer&gt;();</div><div class="line">        Arrays.sort(S);</div><div class="line">        helper(result,list,S,<span class="number">0</span>);</div><div class="line">        <span class="keyword">return</span> result;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">helper</span><span class="params">(List&lt;List&lt;Integer&gt;&gt; result, </div><div class="line">    		List&lt;Integer&gt; list, <span class="keyword">int</span>[] S, <span class="keyword">int</span> end)</span></span>&#123;</div><div class="line">        result.add(<span class="keyword">new</span> ArrayList(list));</div><div class="line">        </div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = end; i &lt; S.length; i++)&#123;</div><div class="line">            list.add(S[i]);</div><div class="line">            helper(result,list,S,i+<span class="number">1</span>);</div><div class="line">            list.remove(list.size() - <span class="number">1</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
           <!--noindex-->
           <div class="post-more-link text-center">
-            <a class="btn" href="/2015/02/09/backtracking/#more" rel="contents">
+            <a class="btn" href="/2015/02/09/backtracking.html#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -358,7 +358,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://rainyzz.com/2015/01/07/ssh-keys/">
+  <link itemprop="mainEntityOfPage" href="http://rainyzz.com/2015/01/07/ssh-keys.html">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="rainyzz">
@@ -383,7 +383,7 @@
             
               
                 
-                <a class="post-title-link" href="/2015/01/07/ssh-keys/" itemprop="url">
+                <a class="post-title-link" href="/2015/01/07/ssh-keys.html" itemprop="url">
                   SSH公钥与私钥
                 </a>
               
@@ -441,7 +441,7 @@
 <p>密钥主要有两种使用方式，一种是对<em>数据加密</em>，一种是实现<em>身份认证</em>。</p>
           <!--noindex-->
           <div class="post-more-link text-center">
-            <a class="btn" href="/2015/01/07/ssh-keys/#more" rel="contents">
+            <a class="btn" href="/2015/01/07/ssh-keys.html#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -482,7 +482,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://rainyzz.com/2015/01/03/search-review/">
+  <link itemprop="mainEntityOfPage" href="http://rainyzz.com/2015/01/03/search-review.html">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="rainyzz">
@@ -507,7 +507,7 @@
             
               
                 
-                <a class="post-title-link" href="/2015/01/03/search-review/" itemprop="url">
+                <a class="post-title-link" href="/2015/01/03/search-review.html" itemprop="url">
                   搜索复习
                 </a>
               
@@ -568,7 +568,7 @@
 <p>所有的调整都是局部的调整，能够很快完成。<br>
           <!--noindex-->
           <div class="post-more-link text-center">
-            <a class="btn" href="/2015/01/03/search-review/#more" rel="contents">
+            <a class="btn" href="/2015/01/03/search-review.html#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -609,7 +609,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://rainyzz.com/2014/12/30/sort/">
+  <link itemprop="mainEntityOfPage" href="http://rainyzz.com/2014/12/30/sort.html">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="rainyzz">
@@ -634,7 +634,7 @@
             
               
                 
-                <a class="post-title-link" href="/2014/12/30/sort/" itemprop="url">
+                <a class="post-title-link" href="/2014/12/30/sort.html" itemprop="url">
                   排序复习
                 </a>
               
@@ -730,7 +730,7 @@
 <p><code>compareTo</code>属于对象的方法，来自<code>Comparable</code>接口，实现当前对象与同类对象的对比。</p>
           <!--noindex-->
           <div class="post-more-link text-center">
-            <a class="btn" href="/2014/12/30/sort/#more" rel="contents">
+            <a class="btn" href="/2014/12/30/sort.html#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -771,7 +771,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://rainyzz.com/2014/08/01/linux-commands/">
+  <link itemprop="mainEntityOfPage" href="http://rainyzz.com/2014/08/01/linux-commands.html">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="rainyzz">
@@ -796,7 +796,7 @@
             
               
                 
-                <a class="post-title-link" href="/2014/08/01/linux-commands/" itemprop="url">
+                <a class="post-title-link" href="/2014/08/01/linux-commands.html" itemprop="url">
                   常用 Linux 命令
                 </a>
               
@@ -902,7 +902,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://rainyzz.com/2014/07/31/linkrank/">
+  <link itemprop="mainEntityOfPage" href="http://rainyzz.com/2014/07/31/linkrank.html">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="rainyzz">
@@ -927,7 +927,7 @@
             
               
                 
-                <a class="post-title-link" href="/2014/07/31/linkrank/" itemprop="url">
+                <a class="post-title-link" href="/2014/07/31/linkrank.html" itemprop="url">
                   LinkRank
                 </a>
               
