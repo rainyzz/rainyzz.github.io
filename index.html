@@ -236,6 +236,171 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://rainyzz.com/2016/12/03/distributed-storage.html">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="rainyzz">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/img/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="rainyzz's blog">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="rainyzz's blog" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/12/03/distributed-storage.html" itemprop="url">
+                  分布式存储概要
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-03T17:38:11+08:00">
+                2016-12-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="单机存储模型"><a href="#单机存储模型" class="headerlink" title="单机存储模型"></a>单机存储模型</h2><h3 id="内存中的结构"><a href="#内存中的结构" class="headerlink" title="内存中的结构"></a>内存中的结构</h3><p>Map<br>HashMap<br>SkipList，和红黑树性能数量级一致，但是不需要调整树结构，锁使用较少</p>
+<h3 id="Direct-Access-（Hash-Engine）"><a href="#Direct-Access-（Hash-Engine）" class="headerlink" title="Direct-Access （Hash Engine）"></a>Direct-Access （Hash Engine）</h3><p>全内存索引，内存中存储了key和对应的offset</p>
+<ol>
+<li>读取时随机读</li>
+<li>写入append到最后，提升写性能，读写一次io</li>
+<li>更新时也是追加写，旧数据标志为无效</li>
+<li>定时回收无用区块<br>限制：</li>
+<li>内存容量，需要压缩。</li>
+<li>Hash桶利用率 (Cuckoo Hash)</li>
+</ol>
+<h3 id="B-树"><a href="#B-树" class="headerlink" title="B+树"></a>B+树</h3><p>每次io都能读取一个B+树节点<br>读写一个节点需要使用log n次IO操作</p>
+<h3 id="LSM-Tree"><a href="#LSM-Tree" class="headerlink" title="LSM-Tree"></a>LSM-Tree</h3><ol>
+<li>随机写转换为顺序写，写入数据时先写入内存，内存buffer写满后排序形成小patch文件，不同patch是有时间序的</li>
+<li>当读取时，从最新的patch读取，每个patch也存了当前patch的最大key和最小key，然后找到包含对应的patch，然后二分查找，然后读取到各个patch后依次应用，生成最后的结果，可以用bloomfilter来减少patch的读取</li>
+<li>写操作的话都是不停的写日志</li>
+<li>patch也会不断合并，minor patch放在SSD，major patch读取也只是寻道时间10ms</li>
+</ol>
+<h2 id="单机存储模型设计原则"><a href="#单机存储模型设计原则" class="headerlink" title="单机存储模型设计原则"></a>单机存储模型设计原则</h2><h3 id="空间换时间"><a href="#空间换时间" class="headerlink" title="空间换时间"></a>空间换时间</h3><p>Cache, Buffer, Index, LSM, SkipList</p>
+<h3 id="时间换空间"><a href="#时间换空间" class="headerlink" title="时间换空间"></a>时间换空间</h3><p>压缩, EC（EraseCode)<br>8分片-&gt;12分片<br>N+K分片，最多可以丢K个分片都能恢复</p>
+<h3 id="读延迟换写延迟"><a href="#读延迟换写延迟" class="headerlink" title="读延迟换写延迟"></a>读延迟换写延迟</h3><p>LSM</p>
+<h3 id="写延迟换读延迟"><a href="#写延迟换读延迟" class="headerlink" title="写延迟换读延迟"></a>写延迟换读延迟</h3><p>Index, Tree…</p>
+<p>读写吞吐量，读写延时<br>硬盘读性能每秒100次，ssd每秒6w次读以上<br>SAS_SATA SSD (10)110us    1.5GBs     16TB_disk, 200K IOPS<br>SAS_SATA HDD (10)10ms     1.5GBs     10TB_disk, 200 IOPS</p>
+<h2 id="数据划分"><a href="#数据划分" class="headerlink" title="数据划分"></a>数据划分</h2><h3 id="哈希划分"><a href="#哈希划分" class="headerlink" title="哈希划分"></a>哈希划分</h3><p>实现简单，不宜扩展</p>
+<h3 id="范围划分"><a href="#范围划分" class="headerlink" title="范围划分"></a>范围划分</h3><p>全局有序，常见时间分区</p>
+<h3 id="一致性哈希"><a href="#一致性哈希" class="headerlink" title="一致性哈希"></a>一致性哈希</h3><p>均衡好，实现复杂</p>
+<h3 id="虚拟节点"><a href="#虚拟节点" class="headerlink" title="虚拟节点"></a>虚拟节点</h3><p>每个物理机有多个虚拟节点，扩展时移动虚拟节点即可<br>key-&gt;bucket, bucket-&gt;DataNode<br>扩展时只需要移动bucket和DataNode的关系</p>
+<h2 id="metadata"><a href="#metadata" class="headerlink" title="metadata"></a>metadata</h2><ul>
+<li>轻量级master<br>元信息较少，状态可恢复</li>
+<li>主从master<br>元信息较多，需保证master的可靠性</li>
+<li>去中心化master<br>DHT，Gossip，Dynamo，Cassandra</li>
+<li>无状态master<br>元信息存zookeeper，Table中</li>
+</ul>
+<h2 id="Replication"><a href="#Replication" class="headerlink" title="Replication"></a>Replication</h2><h3 id="流水线（Pipeline）"><a href="#流水线（Pipeline）" class="headerlink" title="流水线（Pipeline）"></a>流水线（Pipeline）</h3><p>写入primary，写入slave1，写入slave2，所有slave写完成后返回给master ack，然后再返回给用户<br>所有节点入度出度都是1，减少网络压力<br>当遭遇慢节点时比较难处理</p>
+<h3 id="Dispatch"><a href="#Dispatch" class="headerlink" title="Dispatch"></a>Dispatch</h3><p>client向master询问slave节点位置<br>client 同时向slave写<br>规避慢节点：同时写四个节点，去掉慢节点<br>单master压力较大<br>写延迟需要比较低，不在乎网络流量使用</p>
+<h3 id="星形"><a href="#星形" class="headerlink" title="星形"></a>星形</h3><p>client写master<br>master同时向slave同时写</p>
+<h3 id="基于共享存储"><a href="#基于共享存储" class="headerlink" title="基于共享存储"></a>基于共享存储</h3><p>master写log，slave1和slave2读取log同步</p>
+<h2 id="一致性"><a href="#一致性" class="headerlink" title="一致性"></a>一致性</h2><h3 id="一主多从：只读主副本保证一致性"><a href="#一主多从：只读主副本保证一致性" class="headerlink" title="一主多从：只读主副本保证一致性"></a>一主多从：只读主副本保证一致性</h3><p>对等副本：W+R&gt;N 保证会话一致性<br>提高可靠性：增加副本数，提高副本修复速度</p>
+<h3 id="强一致性："><a href="#强一致性：" class="headerlink" title="强一致性："></a>强一致性：</h3><p>只要写成功了就一定能读到<br>只要能读到就一直能读到</p>
+<h3 id="一致性协议："><a href="#一致性协议：" class="headerlink" title="一致性协议："></a>一致性协议：</h3><p>磁盘不稳定，网络划分，机器假死，时钟不准，进程运行，网络速度可快可慢</p>
+<h3 id="election"><a href="#election" class="headerlink" title="election"></a>election</h3><h3 id="fencing"><a href="#fencing" class="headerlink" title="fencing"></a>fencing</h3><p>机器假死又复活，重新选了新的主，原来的主又复活，变成了双主，或者两个客户端同时写<br>数据存储层面应该防止这种情况</p>
+<h2 id="log-replication-compaction"><a href="#log-replication-compaction" class="headerlink" title="log replication/ compaction"></a>log replication/ compaction</h2><p>数据可靠性<br>数据一致性</p>
+<h2 id="membership-change"><a href="#membership-change" class="headerlink" title="membership change"></a>membership change</h2><p>Raft<br>Zookeeper<br>Chubby</p>
+<h2 id="架构设计范式"><a href="#架构设计范式" class="headerlink" title="架构设计范式"></a>架构设计范式</h2><h3 id="Master-Node"><a href="#Master-Node" class="headerlink" title="Master-Node"></a>Master-Node</h3><p>Primary Master, Slave Master, Client直接向node写</p>
+<h3 id="共享协调系统"><a href="#共享协调系统" class="headerlink" title="共享协调系统"></a>共享协调系统</h3><p>Zookeeper</p>
+<h3 id="无中心架构"><a href="#无中心架构" class="headerlink" title="无中心架构"></a>无中心架构</h3><p>一致性hash，Dynamo </p>
+<h3 id="分层架构"><a href="#分层架构" class="headerlink" title="分层架构"></a>分层架构</h3><p>（HBase, BigTable）数据存储依赖于第三方分布式存储，对上层来说不需要关注数据的可靠性和一致性</p>
+<h2 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h2><p>吞吐，延迟<br>读性能？写性能？元信息操作？<br>网络不好，跨机房，集群整体繁忙，限速</p>
+<h2 id="CAP"><a href="#CAP" class="headerlink" title="CAP"></a>CAP</h2><p>CP：主从模式，主挂了或者主分割了就不可用了<br>CA：对等副本，可能会数据不一致</p>
+<h2 id="分布式系统分类"><a href="#分布式系统分类" class="headerlink" title="分布式系统分类"></a>分布式系统分类</h2><p>KV，对象，表格，文件系统</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
   <link itemprop="mainEntityOfPage" href="http://rainyzz.com/2016/11/18/GFS学习.html">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -872,128 +1037,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://rainyzz.com/2015/02/12/gc.html">
-
-  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="rainyzz">
-    <meta itemprop="description" content="">
-    <meta itemprop="image" content="/img/avatar.jpg">
-  </span>
-
-  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-    <meta itemprop="name" content="rainyzz's blog">
-    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
-      <img style="display:none;" itemprop="url image" alt="rainyzz's blog" src="">
-    </span>
-  </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/02/12/gc.html" itemprop="url">
-                  Java的内存回收总结
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2015-02-12T10:56:49+08:00">
-                2015-02-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>说到垃圾回收首先要说一下JVM的内存机制，垃圾回收主要回收的是JVM中堆的内存，堆中主要存储的是各种类的实例，占了Java程序使用内存的绝大部分。当前Java内存回收使用的分代回收机制，将内存分为新生代，老年代和永久代，针对不同的代使用不同的回收策略。</p>
-<p>##内存回收算法<br>主要的回收算法包括标记-清除算法，复制算法，标记-整理算法。</p>
-          <!--noindex-->
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/02/12/gc.html#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1039,7 +1082,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">33</span>
+              <span class="site-state-item-count">34</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
