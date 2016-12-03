@@ -2,9 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://rainyzz.com/2016/11/18/GFS%E5%AD%A6%E4%B9%A0.html</loc>
+    
+    <lastmod>2016-12-03T09:52:43.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://rainyzz.com/2016/12/03/distributed-storage.html</loc>
     
-    <lastmod>2016-12-03T09:50:45.000Z</lastmod>
+    <lastmod>2016-12-03T09:52:33.000Z</lastmod>
     
   </url>
   
@@ -12,13 +19,6 @@
     <loc>http://rainyzz.com/tags/index.html</loc>
     
     <lastmod>2016-12-02T06:16:30.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://rainyzz.com/2016/11/18/GFS%E5%AD%A6%E4%B9%A0.html</loc>
-    
-    <lastmod>2016-11-18T05:46:46.000Z</lastmod>
     
   </url>
   

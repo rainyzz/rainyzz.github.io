@@ -106,7 +106,7 @@ Direct-Access （Hash Engine）全内存索引，内存中存储了key和对应�
 定时回收无用区块限制：
 内存容量，需要压缩。
 Hash桶利用率 (Cuc">
-<meta property="og:updated_time" content="2016-12-03T09:50:45.000Z">
+<meta property="og:updated_time" content="2016-12-03T09:52:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="分布式存储概要">
 <meta name="twitter:description" content="单机存储模型内存中的结构MapHashMapSkipList，和红黑树性能数量级一致，但是不需要调整树结构，锁使用较少
@@ -352,6 +352,7 @@ Hash桶利用率 (Cuc">
 <li>写操作的话都是不停的写日志</li>
 <li>patch也会不断合并，minor patch放在SSD，major patch读取也只是寻道时间10ms</li>
 </ol>
+<a id="more"></a>
 <h2 id="单机存储模型设计原则"><a href="#单机存储模型设计原则" class="headerlink" title="单机存储模型设计原则"></a>单机存储模型设计原则</h2><h3 id="空间换时间"><a href="#空间换时间" class="headerlink" title="空间换时间"></a>空间换时间</h3><p>Cache, Buffer, Index, LSM, SkipList</p>
 <h3 id="时间换空间"><a href="#时间换空间" class="headerlink" title="时间换空间"></a>时间换空间</h3><p>压缩, EC（EraseCode)<br>8分片-&gt;12分片<br>N+K分片，最多可以丢K个分片都能恢复</p>
 <h3 id="读延迟换写延迟"><a href="#读延迟换写延迟" class="headerlink" title="读延迟换写延迟"></a>读延迟换写延迟</h3><p>LSM</p>

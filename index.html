@@ -313,8 +313,7 @@
 
       
         
-          
-            <h2 id="单机存储模型"><a href="#单机存储模型" class="headerlink" title="单机存储模型"></a>单机存储模型</h2><h3 id="内存中的结构"><a href="#内存中的结构" class="headerlink" title="内存中的结构"></a>内存中的结构</h3><p>Map<br>HashMap<br>SkipList，和红黑树性能数量级一致，但是不需要调整树结构，锁使用较少</p>
+          <h2 id="单机存储模型"><a href="#单机存储模型" class="headerlink" title="单机存储模型"></a>单机存储模型</h2><h3 id="内存中的结构"><a href="#内存中的结构" class="headerlink" title="内存中的结构"></a>内存中的结构</h3><p>Map<br>HashMap<br>SkipList，和红黑树性能数量级一致，但是不需要调整树结构，锁使用较少</p>
 <h3 id="Direct-Access-（Hash-Engine）"><a href="#Direct-Access-（Hash-Engine）" class="headerlink" title="Direct-Access （Hash Engine）"></a>Direct-Access （Hash Engine）</h3><p>全内存索引，内存中存储了key和对应的offset</p>
 <ol>
 <li>读取时随机读</li>
@@ -331,40 +330,13 @@
 <li>写操作的话都是不停的写日志</li>
 <li>patch也会不断合并，minor patch放在SSD，major patch读取也只是寻道时间10ms</li>
 </ol>
-<h2 id="单机存储模型设计原则"><a href="#单机存储模型设计原则" class="headerlink" title="单机存储模型设计原则"></a>单机存储模型设计原则</h2><h3 id="空间换时间"><a href="#空间换时间" class="headerlink" title="空间换时间"></a>空间换时间</h3><p>Cache, Buffer, Index, LSM, SkipList</p>
-<h3 id="时间换空间"><a href="#时间换空间" class="headerlink" title="时间换空间"></a>时间换空间</h3><p>压缩, EC（EraseCode)<br>8分片-&gt;12分片<br>N+K分片，最多可以丢K个分片都能恢复</p>
-<h3 id="读延迟换写延迟"><a href="#读延迟换写延迟" class="headerlink" title="读延迟换写延迟"></a>读延迟换写延迟</h3><p>LSM</p>
-<h3 id="写延迟换读延迟"><a href="#写延迟换读延迟" class="headerlink" title="写延迟换读延迟"></a>写延迟换读延迟</h3><p>Index, Tree…</p>
-<p>读写吞吐量，读写延时<br>硬盘读性能每秒100次，ssd每秒6w次读以上<br>SAS_SATA SSD (10)110us    1.5GBs     16TB_disk, 200K IOPS<br>SAS_SATA HDD (10)10ms     1.5GBs     10TB_disk, 200 IOPS</p>
-<h2 id="数据划分"><a href="#数据划分" class="headerlink" title="数据划分"></a>数据划分</h2><h3 id="哈希划分"><a href="#哈希划分" class="headerlink" title="哈希划分"></a>哈希划分</h3><p>实现简单，不宜扩展</p>
-<h3 id="范围划分"><a href="#范围划分" class="headerlink" title="范围划分"></a>范围划分</h3><p>全局有序，常见时间分区</p>
-<h3 id="一致性哈希"><a href="#一致性哈希" class="headerlink" title="一致性哈希"></a>一致性哈希</h3><p>均衡好，实现复杂</p>
-<h3 id="虚拟节点"><a href="#虚拟节点" class="headerlink" title="虚拟节点"></a>虚拟节点</h3><p>每个物理机有多个虚拟节点，扩展时移动虚拟节点即可<br>key-&gt;bucket, bucket-&gt;DataNode<br>扩展时只需要移动bucket和DataNode的关系</p>
-<h2 id="metadata"><a href="#metadata" class="headerlink" title="metadata"></a>metadata</h2><ul>
-<li>轻量级master<br>元信息较少，状态可恢复</li>
-<li>主从master<br>元信息较多，需保证master的可靠性</li>
-<li>去中心化master<br>DHT，Gossip，Dynamo，Cassandra</li>
-<li>无状态master<br>元信息存zookeeper，Table中</li>
-</ul>
-<h2 id="Replication"><a href="#Replication" class="headerlink" title="Replication"></a>Replication</h2><h3 id="流水线（Pipeline）"><a href="#流水线（Pipeline）" class="headerlink" title="流水线（Pipeline）"></a>流水线（Pipeline）</h3><p>写入primary，写入slave1，写入slave2，所有slave写完成后返回给master ack，然后再返回给用户<br>所有节点入度出度都是1，减少网络压力<br>当遭遇慢节点时比较难处理</p>
-<h3 id="Dispatch"><a href="#Dispatch" class="headerlink" title="Dispatch"></a>Dispatch</h3><p>client向master询问slave节点位置<br>client 同时向slave写<br>规避慢节点：同时写四个节点，去掉慢节点<br>单master压力较大<br>写延迟需要比较低，不在乎网络流量使用</p>
-<h3 id="星形"><a href="#星形" class="headerlink" title="星形"></a>星形</h3><p>client写master<br>master同时向slave同时写</p>
-<h3 id="基于共享存储"><a href="#基于共享存储" class="headerlink" title="基于共享存储"></a>基于共享存储</h3><p>master写log，slave1和slave2读取log同步</p>
-<h2 id="一致性"><a href="#一致性" class="headerlink" title="一致性"></a>一致性</h2><h3 id="一主多从：只读主副本保证一致性"><a href="#一主多从：只读主副本保证一致性" class="headerlink" title="一主多从：只读主副本保证一致性"></a>一主多从：只读主副本保证一致性</h3><p>对等副本：W+R&gt;N 保证会话一致性<br>提高可靠性：增加副本数，提高副本修复速度</p>
-<h3 id="强一致性："><a href="#强一致性：" class="headerlink" title="强一致性："></a>强一致性：</h3><p>只要写成功了就一定能读到<br>只要能读到就一直能读到</p>
-<h3 id="一致性协议："><a href="#一致性协议：" class="headerlink" title="一致性协议："></a>一致性协议：</h3><p>磁盘不稳定，网络划分，机器假死，时钟不准，进程运行，网络速度可快可慢</p>
-<h3 id="election"><a href="#election" class="headerlink" title="election"></a>election</h3><h3 id="fencing"><a href="#fencing" class="headerlink" title="fencing"></a>fencing</h3><p>机器假死又复活，重新选了新的主，原来的主又复活，变成了双主，或者两个客户端同时写<br>数据存储层面应该防止这种情况</p>
-<h2 id="log-replication-compaction"><a href="#log-replication-compaction" class="headerlink" title="log replication/ compaction"></a>log replication/ compaction</h2><p>数据可靠性<br>数据一致性</p>
-<h2 id="membership-change"><a href="#membership-change" class="headerlink" title="membership change"></a>membership change</h2><p>Raft<br>Zookeeper<br>Chubby</p>
-<h2 id="架构设计范式"><a href="#架构设计范式" class="headerlink" title="架构设计范式"></a>架构设计范式</h2><h3 id="Master-Node"><a href="#Master-Node" class="headerlink" title="Master-Node"></a>Master-Node</h3><p>Primary Master, Slave Master, Client直接向node写</p>
-<h3 id="共享协调系统"><a href="#共享协调系统" class="headerlink" title="共享协调系统"></a>共享协调系统</h3><p>Zookeeper</p>
-<h3 id="无中心架构"><a href="#无中心架构" class="headerlink" title="无中心架构"></a>无中心架构</h3><p>一致性hash，Dynamo </p>
-<h3 id="分层架构"><a href="#分层架构" class="headerlink" title="分层架构"></a>分层架构</h3><p>（HBase, BigTable）数据存储依赖于第三方分布式存储，对上层来说不需要关注数据的可靠性和一致性</p>
-<h2 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h2><p>吞吐，延迟<br>读性能？写性能？元信息操作？<br>网络不好，跨机房，集群整体繁忙，限速</p>
-<h2 id="CAP"><a href="#CAP" class="headerlink" title="CAP"></a>CAP</h2><p>CP：主从模式，主挂了或者主分割了就不可用了<br>CA：对等副本，可能会数据不一致</p>
-<h2 id="分布式系统分类"><a href="#分布式系统分类" class="headerlink" title="分布式系统分类"></a>分布式系统分类</h2><p>KV，对象，表格，文件系统</p>
-
-          
+          <!--noindex-->
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/12/03/distributed-storage.html#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -478,8 +450,7 @@
 
       
         
-          
-            <h2 id="系统组成"><a href="#系统组成" class="headerlink" title="系统组成"></a>系统组成</h2><p><img src="/img/FFB08F68-1F80-4807-8982-4EB56B8D8864.png" alt=""></p>
+          <h2 id="系统组成"><a href="#系统组成" class="headerlink" title="系统组成"></a>系统组成</h2><p><img src="/img/FFB08F68-1F80-4807-8982-4EB56B8D8864.png" alt=""></p>
 <ul>
 <li>GFS Master<br>维护了系统中的元数据，chunk namespace，文件和chunk之间的映射，chunk对应的ChunkServer<br>chunkServer lease管理，垃圾回收，chunk复制等<br>Master会定期通过心跳交换信息</li>
 <li>GFS ChunkServer<br>Master通过lease将写chunk的权力交给ChunkServer，减轻Master的压力<br>每个chunk有3个副本<br>GFS对每个chunk维护了一个版本号，当租约更新时版本号会更新</li>
@@ -500,15 +471,13 @@
 <li>其他副本写入成功后答复主副本</li>
 <li>当有副本写入不成功时主副本重试</li>
 </ol>
-<h2 id="容错机制"><a href="#容错机制" class="headerlink" title="容错机制"></a>容错机制</h2><h3 id="Master"><a href="#Master" class="headerlink" title="Master"></a>Master</h3><p>Shadow Master，实时热备<br>Master需要持久化的数据包括（1）namespace（2）文件到chunk的映射<br>chunk副本信息可以不持久化，在恢复后通过ChunkServer获取这些信息</p>
-<h3 id="ChunkServer"><a href="#ChunkServer" class="headerlink" title="ChunkServer"></a>ChunkServer</h3><p>同一个chunk存储在多个ChunkServer，副本丢失时自动复制到其他的ChunkServer</p>
-<h2 id="Master设计"><a href="#Master设计" class="headerlink" title="Master设计"></a>Master设计</h2><ul>
-<li>内存占用<br>chunk的元数据包括：全局唯一id、版本号、每个chunk的ChunkServer编号，引用计数等，所有原信息不超过64字节<br>Master对命名空间也进行了压缩，文件命名空间占用内存也不多</li>
-<li>负载均衡<br>chunk副本选择条件包括：（1）磁盘利用率（2）最近新建chunk的请求数（3）每个chunk的所有副本不能在同一个机架</li>
-<li>垃圾回收<br>延迟删除，定时回收</li>
-</ul>
-
-          
+          <!--noindex-->
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/11/18/GFS学习.html#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>

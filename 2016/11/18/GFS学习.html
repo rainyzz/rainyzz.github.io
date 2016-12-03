@@ -97,7 +97,7 @@ GFS ChunkServerMaster通过lease将写chunk的权力交给ChunkServer，减轻Ma
 GFS Master维护了系统中的元数据，chunk namespace，文件和chunk之间的映射，chunk对应的ChunkServerchunkServer lease管理，垃圾回收，chunk复制等Master会定期通过心跳交换信息
 GFS ChunkServerMaster通过lease将写chunk的权力交给ChunkServer，减轻Master的压力每个chunk有3个">
 <meta property="og:image" content="http://rainyzz.com/img/FFB08F68-1F80-4807-8982-4EB56B8D8864.png">
-<meta property="og:updated_time" content="2016-11-18T05:46:46.000Z">
+<meta property="og:updated_time" content="2016-12-03T09:52:43.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GFS学习">
 <meta name="twitter:description" content="系统组成
@@ -343,6 +343,7 @@ GFS ChunkServerMaster通过lease将写chunk的权力交给ChunkServer，减轻Ma
 <li>其他副本写入成功后答复主副本</li>
 <li>当有副本写入不成功时主副本重试</li>
 </ol>
+<a id="more"></a>
 <h2 id="容错机制"><a href="#容错机制" class="headerlink" title="容错机制"></a>容错机制</h2><h3 id="Master"><a href="#Master" class="headerlink" title="Master"></a>Master</h3><p>Shadow Master，实时热备<br>Master需要持久化的数据包括（1）namespace（2）文件到chunk的映射<br>chunk副本信息可以不持久化，在恢复后通过ChunkServer获取这些信息</p>
 <h3 id="ChunkServer"><a href="#ChunkServer" class="headerlink" title="ChunkServer"></a>ChunkServer</h3><p>同一个chunk存储在多个ChunkServer，副本丢失时自动复制到其他的ChunkServer</p>
 <h2 id="Master设计"><a href="#Master设计" class="headerlink" title="Master设计"></a>Master设计</h2><ul>
