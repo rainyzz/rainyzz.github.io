@@ -295,6 +295,13 @@ SolrCloud是Solr的分布式实现，达到处理过大的索引文件，负载�
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <a href="/2014/07/29/solr-cloud.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/07/29/solr-cloud.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -406,6 +413,13 @@ SolrCloud是Solr的分布式实现，达到处理过大的索引文件，负载�
 
           
   <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
     
   </div>
 
@@ -616,10 +630,35 @@ SolrCloud是Solr的分布式实现，达到处理过大的索引文件，负载�
 
   
 
+    <script type="text/javascript">
+      var disqus_shortname = 'rainystars';
+      var disqus_identifier = '2014/07/29/solr-cloud.html';
+
+      var disqus_title = "SolrCloud介绍";
 
 
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
 
-	
+      run_disqus_script('count.js');
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
 
 
 
