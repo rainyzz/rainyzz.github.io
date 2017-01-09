@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="linux," />
+  <meta name="keywords" content="消息队列," />
 
 
 
@@ -84,28 +84,34 @@
 
 
 
-<meta name="description" content="1.和自启动程序有关的重要的文件和文件夹
-/etc/init.d文件夹       
-该文件夹是自启动程序可执行文件存放的地点
-在启动程序的时候自动会有root权限，所以需要root权限的命令不许要加sudo或其他的。
-自启动命令如果无法执行很可能是因为PATH没有设置，这时候在程序开始时设一下PATH或者直接用命令的全路径就可以了。">
+<meta name="description" content="为什么要使用消息队列
+消息队列主要功能是解耦和，如用户下单时，只要完成核心流程就可以返回给用户，而不是等待所有相关操作（如发站内消息，发短信通知）都完成。对于实时性要求不强的流程，可以放到后台慢慢执行。
+消息队列也可以将巨大的数据写入压力舒缓到下游慢慢执行
+需要将数据向下游广播
+
+消息队列模型
+Push/Queue方式：每有一条新数据都会推送给消费者进行消费，如果消费者消费速度比较低时可能会造成数">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Linux自定义启动程序总结">
-<meta property="og:url" content="http://rainyzz.com/2012/06/09/linux-startup.html">
+<meta property="og:title" content="消息队列简介">
+<meta property="og:url" content="http://rainyzz.com/2017/01/09/message-queue.html">
 <meta property="og:site_name" content="rainyzz's blog">
-<meta property="og:description" content="1.和自启动程序有关的重要的文件和文件夹
-/etc/init.d文件夹       
-该文件夹是自启动程序可执行文件存放的地点
-在启动程序的时候自动会有root权限，所以需要root权限的命令不许要加sudo或其他的。
-自启动命令如果无法执行很可能是因为PATH没有设置，这时候在程序开始时设一下PATH或者直接用命令的全路径就可以了。">
-<meta property="og:updated_time" content="2015-07-08T06:49:38.000Z">
+<meta property="og:description" content="为什么要使用消息队列
+消息队列主要功能是解耦和，如用户下单时，只要完成核心流程就可以返回给用户，而不是等待所有相关操作（如发站内消息，发短信通知）都完成。对于实时性要求不强的流程，可以放到后台慢慢执行。
+消息队列也可以将巨大的数据写入压力舒缓到下游慢慢执行
+需要将数据向下游广播
+
+消息队列模型
+Push/Queue方式：每有一条新数据都会推送给消费者进行消费，如果消费者消费速度比较低时可能会造成数">
+<meta property="og:updated_time" content="2017-01-09T07:18:41.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Linux自定义启动程序总结">
-<meta name="twitter:description" content="1.和自启动程序有关的重要的文件和文件夹
-/etc/init.d文件夹       
-该文件夹是自启动程序可执行文件存放的地点
-在启动程序的时候自动会有root权限，所以需要root权限的命令不许要加sudo或其他的。
-自启动命令如果无法执行很可能是因为PATH没有设置，这时候在程序开始时设一下PATH或者直接用命令的全路径就可以了。">
+<meta name="twitter:title" content="消息队列简介">
+<meta name="twitter:description" content="为什么要使用消息队列
+消息队列主要功能是解耦和，如用户下单时，只要完成核心流程就可以返回给用户，而不是等待所有相关操作（如发站内消息，发短信通知）都完成。对于实时性要求不强的流程，可以放到后台慢慢执行。
+消息队列也可以将巨大的数据写入压力舒缓到下游慢慢执行
+需要将数据向下游广播
+
+消息队列模型
+Push/Queue方式：每有一条新数据都会推送给消费者进行消费，如果消费者消费速度比较低时可能会造成数">
 
 
 
@@ -133,13 +139,13 @@
 
 
 
-  <link rel="canonical" href="http://rainyzz.com/2012/06/09/linux-startup.html"/>
+  <link rel="canonical" href="http://rainyzz.com/2017/01/09/message-queue.html"/>
 
 
 
 
 
-  <title> Linux自定义启动程序总结 | rainyzz's blog </title>
+  <title> 消息队列简介 | rainyzz's blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -250,7 +256,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://rainyzz.com/2012/06/09/linux-startup.html">
+  <link itemprop="mainEntityOfPage" href="http://rainyzz.com/2017/01/09/message-queue.html">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="rainyzz">
@@ -274,7 +280,7 @@
             
             
               
-                Linux自定义启动程序总结
+                消息队列简介
               
             
           </h1>
@@ -287,8 +293,8 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2012-06-09T00:00:00+08:00">
-                2012-06-09
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-09T15:14:21+08:00">
+                2017-01-09
               </time>
             
 
@@ -323,21 +329,33 @@
       
 
       
-        <p>1.和自启动程序有关的重要的文件和文件夹</p>
-<p>/etc/init.d文件夹       </p>
-<p>该文件夹是自启动程序可执行文件存放的地点</p>
-<p>在启动程序的时候自动会有root权限，所以需要root权限的命令不许要加sudo或其他的。</p>
-<p>自启动命令如果无法执行很可能是因为PATH没有设置，这时候在程序开始时设一下PATH或者直接用命令的全路径就可以了。     </p>
-<a id="more"></a>          
-<p>/etc/rc0.d到rc6.d      </p>
-<p>该文件夹里存放在各个run level需要执行的程序启动和关闭</p>
-<p>在这七个文件中的文件全都是链接形式的，全都链接自/etc/init.d内的执行文件，里面的文件有两种格式，一种类似S20winbind，一种类似K20winbind，S代表start，表示在该run level时启动该程序，20代表在这个文件夹内启动程序的启动程序，数字从1到99，最后就是程序名，和init.d内的文件名是对应的，后一种K代表kill，其他和前一种是一样的。</p>
-<p>/etc/rc.local(不同发行版该文件位置不同)          </p>
-<p>该文件里可以放一些需要开机执行的小命令，和前面文件夹的作用是一样的，只是省去编写脚本了，你应该可以发现在前面的文件夹里有S99rc.local，该文件中的指令是在每个run level最后启动的指令。</p>
-<p>2.具体过程</p>
-<p>首先，将写好的脚本文件放入init.d，设置成可执行</p>
-<p>然后使用  sudo update-rc.d 程序名 defaults 来建立启动链接就可以了(update-rc.d 还有一些比较详细的用法可以上网查一下 )</p>
-<p>如果需要删除启动链接   sudo update-rc.d -f 程序名 remove</p>
+        <h2 id="为什么要使用消息队列"><a href="#为什么要使用消息队列" class="headerlink" title="为什么要使用消息队列"></a>为什么要使用消息队列</h2><ul>
+<li>消息队列主要功能是<em>解耦和</em>，如用户下单时，只要完成核心流程就可以返回给用户，而不是等待所有相关操作（如发站内消息，发短信通知）都完成。对于实时性要求不强的流程，可以放到后台慢慢执行。</li>
+<li>消息队列也可以将巨大的数据写入压力舒缓到下游慢慢执行</li>
+<li>需要将数据向下游广播</li>
+</ul>
+<h2 id="消息队列模型"><a href="#消息队列模型" class="headerlink" title="消息队列模型"></a>消息队列模型</h2><ul>
+<li>Push/Queue方式：每有一条新数据都会推送给消费者进行消费，如果消费者消费速度比较低时可能会造成数据堆积</li>
+<li>Pull/Subscribe/Topic方式：消费者定时拉取消息数据，消费者能够指定位置，控制自己的消费速度，但是如果拉取间隔控制不好的话可能会造成数据延迟</li>
+</ul>
+<p><em>总结来说，消费包括单播与广播。所谓单播，就是点到点；而广播，是一点对多点。当然，最常见的情况是组间广播、组内单播。组间广播将一个消息给多个业务方，组内单播是一条消息在一个组内只消费一次。</em></p>
+<h2 id="消息数据存储"><a href="#消息数据存储" class="headerlink" title="消息数据存储"></a>消息数据存储</h2><ul>
+<li>一般消息数据可能会存储在Broker中，Producer写入Broker，Consumer从Broker读取数据，Consumer回复消费确认，Broker删除/备份消息</li>
+<li>在Broker处可以完成错峰/流控/最终可达等一系列需求</li>
+</ul>
+<h2 id="消息队列设计中的问题"><a href="#消息队列设计中的问题" class="headerlink" title="消息队列设计中的问题"></a>消息队列设计中的问题</h2><h3 id="消息乱序"><a href="#消息乱序" class="headerlink" title="消息乱序"></a>消息乱序</h3><p>可以指定版本号，需要消费者和生产者来维护版本号，也可以记录消息的id，确保消息不重复<br>或者定义多个状态，某些消息在特定状态下是无效的</p>
+<h3 id="消息不丢失"><a href="#消息不丢失" class="headerlink" title="消息不丢失"></a>消息不丢失</h3><ul>
+<li>首先将消息落地，然后发送。当失败或者超时时，消息状态是待发送，定时任务不停轮询所有待发送消息，最终一定可以送达</li>
+<li>可能造成消息重复</li>
+</ul>
+<h3 id="消息重复"><a href="#消息重复" class="headerlink" title="消息重复"></a>消息重复</h3><ul>
+<li>幂等地处理消息，同一条消息处理多次应该达到的状态是一致的， 丢弃已经失效的消息</li>
+<li>消息唯一ID：业务方自定义的，还是根据IP/PID/时间戳生成的MessageId，如果有地方记录这个MessageId，消息到来是能够进行比对就能够发现重复</li>
+</ul>
+<h3 id="消息队列应该做的重复处理工作包括"><a href="#消息队列应该做的重复处理工作包括" class="headerlink" title="消息队列应该做的重复处理工作包括"></a>消息队列应该做的重复处理工作包括</h3><ul>
+<li>Broker记录messageId，直到投递成功后清除，重复的ID到来不做处理，返回成功，就基本不会在server端产生重复消息。</li>
+<li>对于server投递到consumer的消息，由于不确定消息是在处理过程中还是已经丢失，重发之前询问对应消费者消息处理是否成功，如果询问无果，再重发。</li>
+</ul>
 
       
     </div>
@@ -361,7 +379,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/linux/" rel="tag"># linux</a>
+            <a href="/tags/消息队列/" rel="tag"># 消息队列</a>
           
         </div>
       
@@ -370,8 +388,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2012/06/02/python-submit-form.html" rel="next" title="用python模拟提交表单">
-                <i class="fa fa-chevron-left"></i> 用python模拟提交表单
+              <a href="/2016/12/03/distributed-storage.html" rel="next" title="分布式存储概要">
+                <i class="fa fa-chevron-left"></i> 分布式存储概要
               </a>
             
           </div>
@@ -379,10 +397,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2012/06/14/sans-serif-serif-monospace.html" rel="prev" title="sans-serif,serif,monospace">
-                sans-serif,serif,monospace <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -429,8 +443,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/img/avatar.jpg"
@@ -476,6 +499,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么要使用消息队列"><span class="nav-number">1.</span> <span class="nav-text">为什么要使用消息队列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消息队列模型"><span class="nav-number">2.</span> <span class="nav-text">消息队列模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消息数据存储"><span class="nav-number">3.</span> <span class="nav-text">消息数据存储</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消息队列设计中的问题"><span class="nav-number">4.</span> <span class="nav-text">消息队列设计中的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#消息乱序"><span class="nav-number">4.1.</span> <span class="nav-text">消息乱序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消息不丢失"><span class="nav-number">4.2.</span> <span class="nav-text">消息不丢失</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消息重复"><span class="nav-number">4.3.</span> <span class="nav-text">消息重复</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消息队列应该做的重复处理工作包括"><span class="nav-number">4.4.</span> <span class="nav-text">消息队列应该做的重复处理工作包括</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
     </div>
